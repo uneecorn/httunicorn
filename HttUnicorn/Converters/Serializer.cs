@@ -2,11 +2,11 @@
 using Newtonsoft.Json;
 using System;
 
-namespace HttUnicorn.Serializer
+namespace HttUnicorn.Converters
 {
-    public class Serializer : ISerializer
+    public static class Serializer
     {
-        public T Deserialize<T>(string json)
+        public static T Deserialize<T>(string json)
         {
             try
             {
@@ -18,7 +18,7 @@ namespace HttUnicorn.Serializer
             }
         }
 
-        public string Serialize<T>(T obj)
+        public static string Serialize<T>(T obj)
         {
             try
             {

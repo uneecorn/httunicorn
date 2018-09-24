@@ -50,9 +50,8 @@
     <Compile Include="Interfaces\IHasTimeoutSetter.cs" />
     <Compile Include="Interfaces\IHasUrlSetter.cs" />
     <Compile Include="Interfaces\IHttUnicorn.cs" />
-    <Compile Include="Interfaces\ISerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serializer\Serializer.cs" />
+    <Compile Include="Converters\Serializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
