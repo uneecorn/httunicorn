@@ -45,15 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\ContentFactory.cs" />
-    <Compile Include="Enum\Method.cs" />
     <Compile Include="Implementation\HttUnicornSender.cs" />
     <Compile Include="Interfaces\IHasHttpGetMethod.cs" />
-    <Compile Include="Interfaces\IHasHttpMethodSetter.cs" />
     <Compile Include="Interfaces\IHasHttpPostMethod.cs" />
     <Compile Include="Interfaces\IHasHttpRequestHeadersSetter.cs" />
     <Compile Include="Interfaces\IHasTimeoutSetter.cs" />
     <Compile Include="Interfaces\IHasUrlSetter.cs" />
-    <Compile Include="Interfaces\IHttUnicorn.cs" />
+    <Compile Include="Interfaces\IHttUnicornSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Converters\Serializer.cs" />
   </ItemGroup>

@@ -8,6 +8,6 @@ namespace HttUnicorn.Interfaces
 {
     public interface IHasHttpRequestHeadersSetter
     {
-        IHttUnicorn AddHttpRequestHeader(string name, string value);
+        IHttUnicornSender AddHttpRequestHeader(string name, string value);
     }
 }

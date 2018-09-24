@@ -8,6 +8,6 @@ namespace HttUnicorn.Interfaces
 {
     public interface IHasUrlSetter
     {
-        IHttUnicorn SetUrl(string url);
+        IHttUnicornSender SetUrl(string url);
     }
 }

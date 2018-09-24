@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
-
-namespace HttUnicorn.Interfaces
+﻿namespace HttUnicorn.Interfaces
 {
-    public interface IHttUnicorn :
+    public interface IHttUnicornSender :
         IHasUrlSetter,
         IHasHttpRequestHeadersSetter,
         IHasTimeoutSetter,

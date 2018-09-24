@@ -2,12 +2,11 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using HttUnicorn.Converters;
-using HttUnicorn.Enum;
 using HttUnicorn.Interfaces;
 
 namespace HttUnicorn.Implementation
 {
-    public class HttUnicornSender : IHttUnicorn
+    public class HttUnicornSender : IHttUnicornSender
     {
         public string Url { get; private set; }
 
@@ -17,13 +16,13 @@ namespace HttUnicorn.Implementation
         {
             Client = new HttpClient();
         }
-        public IHttUnicorn AddHttpRequestHeader(string name, string value)
+        public IHttUnicornSender AddHttpRequestHeader(string name, string value)
         {
             Client.DefaultRequestHeaders.Add(name, value);
             return this;
         }
 
-        public IHttUnicorn SetUrl(string url)
+        public IHttUnicornSender SetUrl(string url)
         {
             Url = url;
             return this;
@@ -55,12 +54,30 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                using (HttpResponseMessage responseMessage = await Client.PostAsync(Url, ContentFactory.CreateContent(obj)))
+                string responseString = await GetJsonAsync();
+                return Serializer.Deserialize<TResponseContent>(responseString);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IHttUnicornSender SetTimeout(TimeSpan timeout)
+        {
+            Client.Timeout = timeout;
+            return this;
+        }
+
+        public async Task<string> GetJsonAsync()
+        {
+            try
+            {
+                using (HttpResponseMessage responseMessage = await Client.GetAsync(Url))
                 {
                     if (responseMessage.IsSuccessStatusCode)
                     {
-                        string responseString = await responseMessage.Content.ReadAsStringAsync();
-                        return Serializer.Deserialize<TResponseContent>(responseString);
+                        return await responseMessage.Content.ReadAsStringAsync();
                     }
                     throw new HttpRequestException(
                         $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
@@ -71,12 +88,6 @@ namespace HttUnicorn.Implementation
             {
                 throw ex;
             }
-        }
-
-        public IHttUnicorn SetTimeout(TimeSpan timeout)
-        {
-            Client.Timeout = timeout;
-            return this;
         }
     }
 }

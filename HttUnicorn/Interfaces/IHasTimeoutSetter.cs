@@ -8,6 +8,6 @@ namespace HttUnicorn.Interfaces
 {
     public interface IHasTimeoutSetter
     {
-        IHttUnicorn SetTimeout(TimeSpan timeout);
+        IHttUnicornSender SetTimeout(TimeSpan timeout);
     }
 }

@@ -9,5 +9,6 @@ namespace HttUnicorn.Interfaces
     public interface IHasHttpGetMethod
     {
         Task<TResponseContent> GetAsync<TResponseContent>();
+        Task<string> GetJsonAsync();
     }
 }
