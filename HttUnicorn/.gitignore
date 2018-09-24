@@ -1,3 +1,5 @@
 bin
 obj
 packages
+HttUnicorn.Test
+db.json

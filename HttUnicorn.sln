@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttUnicorn", "HttUnicorn\HttUnicorn.csproj", "{3C336F3E-E1BC-4CDA-827C-8553CD5201D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttUnicorn.Test", "HttUnicorn.Test\HttUnicorn.Test.csproj", "{AF0A8744-5074-4D8C-99F1-3D18075F63EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3C336F3E-E1BC-4CDA-827C-8553CD5201D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C336F3E-E1BC-4CDA-827C-8553CD5201D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C336F3E-E1BC-4CDA-827C-8553CD5201D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF0A8744-5074-4D8C-99F1-3D18075F63EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF0A8744-5074-4D8C-99F1-3D18075F63EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF0A8744-5074-4D8C-99F1-3D18075F63EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF0A8744-5074-4D8C-99F1-3D18075F63EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,16 @@
+{
+  "todos": [
+    {
+      "userId": 36,
+      "id": 1,
+      "title": "todo",
+      "completed": true
+    },
+    {
+      "userId": 36,
+      "id": 2,
+      "title": "todo",
+      "completed": true
+    }
+  ]
+}

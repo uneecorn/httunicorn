@@ -32,7 +32,21 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                using (HttpResponseMessage responseMessage = await Client.GetAsync(Url))
+                string responseString = await GetJsonAsync();
+                return Serializer.Deserialize<TResponseContent>(responseString);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj)
+        {
+            try
+            {
+                using (HttpResponseMessage responseMessage = 
+                    await Client.PostAsync(Url, ContentFactory.CreateContent<TRequestContent>(obj)))
                 {
                     if (responseMessage.IsSuccessStatusCode)
                     {
@@ -50,19 +64,6 @@ namespace HttUnicorn.Implementation
             }
         }
 
-        public async Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj)
-        {
-            try
-            {
-                string responseString = await GetJsonAsync();
-                return Serializer.Deserialize<TResponseContent>(responseString);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public IHttUnicornSender SetTimeout(TimeSpan timeout)
         {
             Client.Timeout = timeout;
@@ -73,7 +74,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                using (HttpResponseMessage responseMessage = await Client.GetAsync(Url))
+                using (HttpResponseMessage responseMessage = await GetResponseAsync())
                 {
                     if (responseMessage.IsSuccessStatusCode)
                     {
@@ -83,6 +84,19 @@ namespace HttUnicorn.Implementation
                         $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
                     );
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<HttpResponseMessage> GetResponseAsync()
+        {
+            try
+            {
+                HttpResponseMessage responseMessage = await Client.GetAsync(Url);
+                return responseMessage;
             }
             catch (Exception ex)
             {
