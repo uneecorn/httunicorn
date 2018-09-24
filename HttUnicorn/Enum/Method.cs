@@ -8,6 +8,6 @@ namespace HttUnicorn.Enum
 {
     public enum Method
     {
-        GET, POST, PUT, DELETE
+        GET, POST
     }
 }

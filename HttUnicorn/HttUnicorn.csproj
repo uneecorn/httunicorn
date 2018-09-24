@@ -44,7 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\ContentFactory.cs" />
     <Compile Include="Enum\Method.cs" />
+    <Compile Include="Implementation\HttUnicorn.cs" />
     <Compile Include="Interfaces\IHasHttpMethodSetter.cs" />
     <Compile Include="Interfaces\IHasHttpRequestHeadersSetter.cs" />
     <Compile Include="Interfaces\IHasTimeoutSetter.cs" />
