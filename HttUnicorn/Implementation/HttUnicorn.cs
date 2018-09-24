@@ -29,7 +29,7 @@ namespace HttUnicorn.Implementation
             return this;
         }
 
-        public async Task<TResponseContent> Get<TResponseContent>()
+        public async Task<TResponseContent> GetAsync<TResponseContent>()
         {
             try
             {
@@ -51,7 +51,7 @@ namespace HttUnicorn.Implementation
             }
         }
 
-        public async Task<TResponseContent> Post<TResponseContent, TRequestContent>(TRequestContent obj)
+        public async Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj)
         {
             try
             {

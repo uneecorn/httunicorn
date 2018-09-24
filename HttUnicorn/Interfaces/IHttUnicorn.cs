@@ -5,9 +5,9 @@ namespace HttUnicorn.Interfaces
     public interface IHttUnicorn :
         IHasUrlSetter,
         IHasHttpRequestHeadersSetter,
-        IHasTimeoutSetter
+        IHasTimeoutSetter,
+        IHasHttpGetMethod,
+        IHasHttpPostMethod
     {
-        Task<TResponseContent> Get<TResponseContent>();
-        Task<TResponseContent> Post<TResponseContent, TRequestContent>(TRequestContent obj);
     }
 }
