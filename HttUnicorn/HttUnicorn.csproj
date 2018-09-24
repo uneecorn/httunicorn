@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Converters\ContentFactory.cs" />
     <Compile Include="Enum\Method.cs" />
-    <Compile Include="Implementation\HttUnicorn.cs" />
+    <Compile Include="Implementation\HttUnicornSender.cs" />
     <Compile Include="Interfaces\IHasHttpGetMethod.cs" />
     <Compile Include="Interfaces\IHasHttpMethodSetter.cs" />
     <Compile Include="Interfaces\IHasHttpPostMethod.cs" />

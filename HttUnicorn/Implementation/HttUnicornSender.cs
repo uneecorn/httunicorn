@@ -7,13 +7,13 @@ using HttUnicorn.Interfaces;
 
 namespace HttUnicorn.Implementation
 {
-    public class HttUnicorn : IHttUnicorn
+    public class HttUnicornSender : IHttUnicorn
     {
         public string Url { get; private set; }
 
         readonly HttpClient Client;
 
-        public HttUnicorn()
+        public HttUnicornSender()
         {
             Client = new HttpClient();
         }
