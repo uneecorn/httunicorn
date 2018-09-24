@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HttUnicorn.Interfaces
 {
-    public interface IHasTimeoutSetter
+    internal interface IHasTimeoutSetter
     {
         IHttUnicornSender SetTimeout(TimeSpan timeout);
     }

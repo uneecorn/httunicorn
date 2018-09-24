@@ -1,6 +1,6 @@
 ﻿namespace HttUnicorn.Interfaces
 {
-    public interface IHttUnicornSender :
+    internal interface IHttUnicornSender :
         IHasUrlSetter,
         IHasHttpRequestHeadersSetter,
         IHasTimeoutSetter,

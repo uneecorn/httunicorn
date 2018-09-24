@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HttUnicorn.Interfaces
 {
-    public interface IHasUrlSetter
+    internal interface IHasUrlSetter
     {
         IHttUnicornSender SetUrl(string url);
     }
