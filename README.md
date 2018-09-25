@@ -26,14 +26,14 @@ await new HttUnicornSender()
     title = "todo",
     userId = 36
   });
-//this one will return de generated Todo, wich type is specified in the first type parameter
+//this one will return the generated Todo, wich type is specified in the first type parameter
 ```
 ### Put
 ```
 Todo updatedTodo = await new HttUnicornSender()
                     .SetUrl("http://localhost:3000/todos/" + todo.id)
                     .PutAsync<Todo, Todo>(todo);
-//this one will return de edited Todo, wich type is specified in the first type parameter
+//this one will return the edited Todo, wich type is specified in the first type parameter
 ```
 ### Delete
 ```
