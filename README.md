@@ -1,12 +1,12 @@
 # httunicorn
 > Designed to help C# programmers creating HTTP Requests, this is The Hypertext Transfer Unicorn :unicorn:
 
-##Usage
+## Usage
 Our goal is to publish HttUnicorn as a NuGet Package in the future. But for now, to use it, you'll need:
 1. Download or clone it;
 2. Add the project to your solution;
 3. Follow the examples below
-> Get
+### Get
 ```
 List<Todo> todos = await new HttUnicornSender()
                       .SetUrl("http://localhost:3000/todos/")
@@ -16,7 +16,7 @@ string todoJson = await new HttUnicornSender()
                     .SetUrl("http://localhost:3000/todos/")
                     .GetJsonAsync();
 ```
-> Post
+### Post
 ```
 await new HttUnicornSender()
   .SetUrl("http://localhost:3000/todos/")
@@ -28,14 +28,14 @@ await new HttUnicornSender()
   });
 //this one will return de generated Todo, wich type is specified in the first type parameter
 ```
-> Put
+### Put
 ```
 Todo updatedTodo = await new HttUnicornSender()
                     .SetUrl("http://localhost:3000/todos/" + todo.id)
                     .PutAsync<Todo, Todo>(todo);
 //this one will return de edited Todo, wich type is specified in the first type parameter
 ```
-> Delete
+### Delete
 ```
 await new HttUnicornSender()
   .SetUrl("http://localhost:3000/todos/")
@@ -46,7 +46,7 @@ MyApiResponse response = await new HttUnicornSender()
                           .DeleteAsync<MyApiResponse>(key);
 //this one is for situations when the requestes API returns an object in the body of the response
 ```
-##Contact me
+## Contact me
 Tyler Mendes de Brito – [@colorigotica](https://twitter.com/colorigotica) – tyler.brito99@gmail.com
 
 [https://github.com/tylerbryto/](https://github.com/tylerbryto/)
