@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HttUnicorn.Interfaces
 {
-    internal interface IHasHttpPostMethod
+    public interface IHasHttpPostMethod
     {
         Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj);
     }

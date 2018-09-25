@@ -1,11 +1,13 @@
 ﻿namespace HttUnicorn.Interfaces
 {
-    internal interface IHttUnicornSender :
+    public interface IHttUnicornSender :
         IHasUrlSetter,
         IHasHttpRequestHeadersSetter,
         IHasTimeoutSetter,
         IHasHttpGetMethod,
-        IHasHttpPostMethod
+        IHasHttpPostMethod,
+        IHasHttpPutMethod,
+        IHasHttpDeleteMethod
     {
     }
 }

@@ -46,7 +46,7 @@ namespace HttUnicorn.Implementation
             try
             {
                 using (HttpResponseMessage responseMessage = 
-                    await Client.PostAsync(Url, ContentFactory.CreateContent<TRequestContent>(obj)))
+                    await Client.PostAsync(Url, ContentFactory.CreateContent(obj)))
                 {
                     if (responseMessage.IsSuccessStatusCode)
                     {
@@ -97,6 +97,74 @@ namespace HttUnicorn.Implementation
             {
                 HttpResponseMessage responseMessage = await Client.GetAsync(Url);
                 return responseMessage;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<TResponseContent> PutAsync<TResponseContent, TRequestContent>(TRequestContent obj)
+        {
+            try
+            {
+                using (HttpResponseMessage responseMessage =
+                    await Client.PutAsync(Url, ContentFactory.CreateContent(obj)))
+                {
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        string responseString = await responseMessage.Content.ReadAsStringAsync();
+                        return Serializer.Deserialize<TResponseContent>(responseString);
+                    }
+                    throw new HttpRequestException(
+                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<TResponseContent> DeleteAsync<TResponseContent>(object key)
+        {
+            try
+            {
+                using (HttpResponseMessage responseMessage =
+                    await Client.DeleteAsync($"{Url}/{key}"))
+                {
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        string responseString = await responseMessage.Content.ReadAsStringAsync();
+                        return Serializer.Deserialize<TResponseContent>(responseString);
+                    }
+                    throw new HttpRequestException(
+                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task DeleteAsync(object key)
+        {
+            try
+            {
+                using (HttpResponseMessage responseMessage =
+                    await Client.DeleteAsync($"{Url}/{key}"))
+                {
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        string responseString = await responseMessage.Content.ReadAsStringAsync();
+                    }
+                    throw new HttpRequestException(
+                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                    );
+                }
             }
             catch (Exception ex)
             {

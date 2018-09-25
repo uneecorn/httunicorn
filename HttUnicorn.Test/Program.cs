@@ -11,17 +11,22 @@ namespace HttUnicorn.Test
     {
         static void Main(string[] args)
         {
+            var x = Post().Result;
+            x = Post().Result;
+            x = Post().Result;
+            x = Post().Result;
             var a = Get().Result;
-            foreach (var item in a)
-            {
-                Console.WriteLine(a);
-            }
+            Console.Write(GetJson().Result);
+            var c = a.FirstOrDefault();
+            
+            var b = Delete(c.id);
+            Console.Write(GetJson().Result);
         }
 
         static async Task<List<Todo>> Get()
         {
             return await new HttUnicornSender()
-                .SetUrl("https://jsonplaceholder.typicode.com/todos/")
+                .SetUrl("http://localhost:3000/todos/")
                 .GetAsync<List<Todo>>();
         }
 
@@ -42,6 +47,20 @@ namespace HttUnicorn.Test
                     title = "todo",
                     userId = 36
                 });
+        }
+
+        static async Task<Todo> Put(Todo todo)
+        {
+            return await new HttUnicornSender()
+                .SetUrl("http://localhost:3000/todos/" + todo.id)
+                .PutAsync<Todo, Todo>(todo);
+        }
+
+        static async Task Delete(object key)
+        {
+            await new HttUnicornSender()
+                .SetUrl("http://localhost:3000/todos/")
+                .DeleteAsync(key);
         }
     }
 }

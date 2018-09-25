@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HttUnicorn.Interfaces
 {
-    internal interface IHasHttpGetMethod
+    public interface IHasHttpGetMethod
     {
         Task<HttpResponseMessage> GetResponseAsync();
         Task<string> GetJsonAsync();

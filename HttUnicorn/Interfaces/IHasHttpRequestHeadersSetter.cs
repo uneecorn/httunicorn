@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HttUnicorn.Interfaces
 {
-    internal interface IHasHttpRequestHeadersSetter
+    public interface IHasHttpRequestHeadersSetter
     {
         IHttUnicornSender AddHttpRequestHeader(string name, string value);
     }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace HttUnicorn.Interfaces
 {
-    public interface IHasUrlSetter
+    public interface IHasHttpPutMethod
     {
-        IHttUnicornSender SetUrl(string url);
+        Task<TResponseContent> PutAsync<TResponseContent, TRequestContent>(TRequestContent obj);
     }
 }

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace HttUnicorn.Interfaces
 {
-    public interface IHasUrlSetter
+    public interface IHasHttpDeleteMethod
     {
-        IHttUnicornSender SetUrl(string url);
+        Task<TResponseContent> DeleteAsync<TResponseContent>(object key);
+        Task DeleteAsync(object key);
     }
 }
