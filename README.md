@@ -58,3 +58,6 @@ Tyler Mendes de Brito – [@colorigotica](https://twitter.com/colorigotica) – 
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
+
+## Patreon
+[![Become a Patron](https://c5.patreon.com/external/logo/become_a_patron_button@2x.png)](https://www.patreon.com/tylerbryto)
