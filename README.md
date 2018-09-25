@@ -2,7 +2,7 @@
 > Designed to help C# programmers creating HTTP Requests, this is The Hypertext Transfer Unicorn :unicorn:
 
 ## Usage
-Our goal is to publish HttUnicorn as a NuGet Package in the future. But for now, to use it, you'll need:
+> Our goal is to publish HttUnicorn as a NuGet Package in the future. But for now, to use it, you'll need:
 1. Download or clone it;
 2. Add the project to your solution;
 3. Follow the examples below
