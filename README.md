@@ -44,7 +44,7 @@ await new HttUnicornSender()
 MyApiResponse response = await new HttUnicornSender()
                           .SetUrl("http://localhost:3000/todos/")
                           .DeleteAsync<MyApiResponse>(key);
-//this one is for situations when the requestes API returns an object in the body of the response
+//this one is for situations when the requested API returns an object in the body of the response
 ```
 ## Contact me
 Tyler Mendes de Brito – [@colorigotica](https://twitter.com/colorigotica) – tyler.brito99@gmail.com
