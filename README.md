@@ -22,9 +22,9 @@ await new HttUnicornSender()
   .SetUrl("http://localhost:3000/todos/")
   .PostAsync<Todo, Todo>(new Todo
   {
-    completed = true,
-    title = "todo",
-    userId = 36
+    Completed = true,
+    Title = "todo",
+    UserId = 36
   });
 //this one will return the generated Todo, wich type is specified in the first type parameter
 ```
