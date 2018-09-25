@@ -60,7 +60,7 @@ namespace HttUnicorn.Test
         {
             await new HttUnicornSender()
                 .SetUrl("http://localhost:3000/todos/")
-                .DeleteAsync(key);
+                .DeleteAsync<Todo>(key);
         }
     }
 }
