@@ -1,4 +1,4 @@
-# httunicorn
+# HttUnicorn
 > Designed to help C# programmers creating HTTP Requests, this is The Hypertext Transfer Unicorn :unicorn:
 
 ## Usage
