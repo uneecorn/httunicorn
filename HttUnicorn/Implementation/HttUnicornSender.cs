@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using HttUnicorn.Converters;
+using HttUnicorn.Helpers;
 using HttUnicorn.Interfaces;
 
 namespace HttUnicorn.Implementation
@@ -9,16 +12,19 @@ namespace HttUnicorn.Implementation
     public class HttUnicornSender : IHttUnicornSender
     {
         public string Url { get; private set; }
+        public List<UnicornHeader> Headers { get; private set; }
+        public TimeSpan Timeout { get; private set; }
 
         readonly HttpClient Client;
 
         public HttUnicornSender()
         {
-            Client = new HttpClient();
+            Headers = new List<UnicornHeader>();
+            Timeout = new TimeSpan(0, 0, 20);
         }
         public IHttUnicornSender AddHttpRequestHeader(string name, string value)
         {
-            Client.DefaultRequestHeaders.Add(name, value);
+            Headers.Add(new UnicornHeader(name, value));
             return this;
         }
 
@@ -27,6 +33,8 @@ namespace HttUnicorn.Implementation
             Url = url;
             return this;
         }
+
+        #region GET
 
         public async Task<TResponseContent> GetAsync<TResponseContent>()
         {
@@ -41,49 +49,21 @@ namespace HttUnicorn.Implementation
             }
         }
 
-        public async Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj)
-        {
-            try
-            {
-                using (HttpResponseMessage responseMessage = 
-                    await Client.PostAsync(Url, ContentFactory.CreateContent(obj)))
-                {
-                    if (responseMessage.IsSuccessStatusCode)
-                    {
-                        string responseString = await responseMessage.Content.ReadAsStringAsync();
-                        return Serializer.Deserialize<TResponseContent>(responseString);
-                    }
-                    throw new HttpRequestException(
-                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public IHttUnicornSender SetTimeout(TimeSpan timeout)
-        {
-            Client.Timeout = timeout;
-            return this;
-        }
 
         public async Task<string> GetJsonAsync()
         {
             try
             {
-                using (HttpResponseMessage responseMessage = await GetResponseAsync())
+                HttpResponseMessage responseMessage = await GetResponseAsync();
+                if (responseMessage.IsSuccessStatusCode)
                 {
-                    if (responseMessage.IsSuccessStatusCode)
-                    {
-                        return await responseMessage.Content.ReadAsStringAsync();
-                    }
-                    throw new HttpRequestException(
-                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
-                    );
+                    string json = await responseMessage.Content.ReadAsStringAsync();
+                    responseMessage.Dispose();
+                    return json;
                 }
+                throw new HttpRequestException(
+                    $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                );
             }
             catch (Exception ex)
             {
@@ -95,8 +75,24 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                HttpResponseMessage responseMessage = await Client.GetAsync(Url);
-                return responseMessage;
+                using (var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(Url)
+                })
+                {
+                    using (var client = new HttpClient())
+                    {
+                        foreach (UnicornHeader header in Headers)
+                        {
+                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
+                        }
+                        using (var responseMessage = await client.SendAsync(request))
+                        {
+                            return responseMessage;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -104,6 +100,49 @@ namespace HttUnicorn.Implementation
             }
         }
 
+        #endregion
+
+        #region POST
+
+        public async Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj)
+        {
+            try
+            {
+                using (var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(Url)
+                })
+                {
+                    using (var client = new HttpClient())
+                    {
+                        foreach (UnicornHeader header in Headers)
+                        {
+                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
+                        }
+                        using (var responseMessage = await client.SendAsync(request))
+                        {
+                            if (responseMessage.IsSuccessStatusCode)
+                            {
+                                string responseString = await responseMessage.Content.ReadAsStringAsync();
+                                return Serializer.Deserialize<TResponseContent>(responseString);
+                            }
+                            throw new HttpRequestException(
+                                $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                            );
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region PUT
         public async Task<TResponseContent> PutAsync<TResponseContent, TRequestContent>(TRequestContent obj)
         {
             try
@@ -126,7 +165,9 @@ namespace HttUnicorn.Implementation
                 throw ex;
             }
         }
+        #endregion
 
+        #region DELETE
         public async Task<TResponseContent> DeleteAsync<TResponseContent>(object key)
         {
             try
@@ -170,6 +211,13 @@ namespace HttUnicorn.Implementation
             {
                 throw ex;
             }
+        }
+        #endregion
+
+        public IHttUnicornSender SetTimeout(TimeSpan timeout)
+        {
+            Timeout = timeout;
+            return this;
         }
     }
 }

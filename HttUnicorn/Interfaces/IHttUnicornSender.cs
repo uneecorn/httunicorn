@@ -7,7 +7,8 @@
         IHasHttpGetMethod,
         IHasHttpPostMethod,
         IHasHttpPutMethod,
-        IHasHttpDeleteMethod
+        IHasHttpDeleteMethod,
+        IHasHttpMethodSetter
     {
     }
 }
