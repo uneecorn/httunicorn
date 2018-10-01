@@ -147,17 +147,31 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                using (HttpResponseMessage responseMessage =
-                    await Client.PutAsync(Url, ContentFactory.CreateContent(obj)))
+                using (var request = new HttpRequestMessage
                 {
-                    if (responseMessage.IsSuccessStatusCode)
+                    Method = HttpMethod.Put,
+                    RequestUri = new Uri(Url)
+                })
+                {
+                    using (var client = new HttpClient())
                     {
-                        string responseString = await responseMessage.Content.ReadAsStringAsync();
-                        return Serializer.Deserialize<TResponseContent>(responseString);
+                        foreach (UnicornHeader header in Headers)
+                        {
+                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
+                        }
+                        using (var responseMessage = await client.SendAsync(request))
+                        {
+                            if (responseMessage.IsSuccessStatusCode)
+                            {
+                                string responseString = await responseMessage.Content.ReadAsStringAsync();
+                                return Serializer.Deserialize<TResponseContent>(responseString);
+                            }
+                            throw new HttpRequestException(
+                                $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                            );
+                        }
+
                     }
-                    throw new HttpRequestException(
-                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
-                    );
                 }
             }
             catch (Exception ex)
