@@ -204,9 +204,6 @@ namespace HttUnicorn.Implementation
             return this;
         }
 
-
-
-
         public IHttUnicornSender SetHttpMethod(HttpMethod method)
         {
             Method = method;
