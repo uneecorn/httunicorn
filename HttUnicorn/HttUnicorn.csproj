@@ -45,9 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\ContentFactory.cs" />
+    <Compile Include="Helpers\UnicornHeader.cs" />
     <Compile Include="Implementation\HttUnicornSender.cs" />
     <Compile Include="Interfaces\IHasHttpDeleteMethod.cs" />
     <Compile Include="Interfaces\IHasHttpGetMethod.cs" />
+    <Compile Include="Interfaces\IHasHttpMethodSetter.cs" />
     <Compile Include="Interfaces\IHasHttpPostMethod.cs" />
     <Compile Include="Interfaces\IHasHttpPutMethod.cs" />
     <Compile Include="Interfaces\IHasHttpRequestHeadersSetter.cs" />
