@@ -1,8 +1,8 @@
-# HttUnicorn
+# HttUnicorn v0.0.1
 > Designed to help C# programmers creating HTTP Requests, this is The Hypertext Transfer Unicorn :unicorn:
 
 ## Usage
-Our goal is to publish HttUnicorn as a NuGet Package in the future. But for now, to use it, you'll need:
+> Our goal is to publish HttUnicorn as a NuGet Package in the future. But for now, to use it, you'll need:
 1. Download or clone it;
 2. Add the project to your solution;
 3. Follow the examples below
@@ -22,9 +22,9 @@ await new HttUnicornSender()
   .SetUrl("http://localhost:3000/todos/")
   .PostAsync<Todo, Todo>(new Todo
   {
-    completed = true,
-    title = "todo",
-    userId = 36
+    Completed = true,
+    Title = "todo",
+    UserId = 36
   });
 //this one will return the generated Todo, wich type is specified in the first type parameter
 ```
@@ -53,7 +53,7 @@ Tyler Mendes de Brito – [@colorigotica](https://twitter.com/colorigotica) – 
 
 ## Contributing
 
-1. Fork it (<https://github.com/tylerbryto/ng-galery/fork>)
+1. Fork it (<https://github.com/tylerbryto/httunicorn/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
