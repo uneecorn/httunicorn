@@ -77,20 +77,22 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                HttpRequestMessage request = new HttpRequestMessage
+                using (var request = new HttpRequestMessage
                 {
                     Method = Method,
                     RequestUri = new Uri(Url)
-                };
-                HttpClient client = new HttpClient();
-                foreach (UnicornHeader header in Headers)
+                })
                 {
-                    client.DefaultRequestHeaders.Add(header.Name, header.Value);
+                    using (var client = new HttpClient())
+                    {
+                        foreach (UnicornHeader header in Headers)
+                        {
+                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
+                        }
+                        HttpResponseMessage responseMessage = await client.SendAsync(request);
+                        return responseMessage;
+                    }
                 }
-                HttpResponseMessage responseMessage = await client.SendAsync(request);
-                client.Dispose();
-                request.Dispose();
-                return responseMessage;
             }
             catch (Exception ex)
             {
