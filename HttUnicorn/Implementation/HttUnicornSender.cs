@@ -14,18 +14,16 @@ namespace HttUnicorn.Implementation
         public string Url { get; private set; }
         public List<UnicornHeader> Headers { get; private set; }
         public TimeSpan Timeout { get; private set; }
-        public HttpMethod Method { get; private set; }
 
         readonly HttpClient Client;
 
         public HttUnicornSender()
         {
             Headers = new List<UnicornHeader>();
-            //Client = new HttpClient();
+            Timeout = new TimeSpan(0, 0, 20);
         }
         public IHttUnicornSender AddHttpRequestHeader(string name, string value)
         {
-            //Client.DefaultRequestHeaders.Add(name, value);
             Headers.Add(new UnicornHeader(name, value));
             return this;
         }
@@ -79,7 +77,7 @@ namespace HttUnicorn.Implementation
             {
                 using (var request = new HttpRequestMessage
                 {
-                    Method = Method,
+                    Method = HttpMethod.Get,
                     RequestUri = new Uri(Url)
                 })
                 {
@@ -89,8 +87,10 @@ namespace HttUnicorn.Implementation
                         {
                             client.DefaultRequestHeaders.Add(header.Name, header.Value);
                         }
-                        HttpResponseMessage responseMessage = await client.SendAsync(request);
-                        return responseMessage;
+                        using (var responseMessage = await client.SendAsync(request))
+                        {
+                            return responseMessage;
+                        }
                     }
                 }
             }
@@ -108,17 +108,31 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                using (HttpResponseMessage responseMessage =
-                    await Client.PostAsync(Url, ContentFactory.CreateContent(obj)))
+                using (var request = new HttpRequestMessage
                 {
-                    if (responseMessage.IsSuccessStatusCode)
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(Url)
+                })
+                {
+                    using (var client = new HttpClient())
                     {
-                        string responseString = await responseMessage.Content.ReadAsStringAsync();
-                        return Serializer.Deserialize<TResponseContent>(responseString);
+                        foreach (UnicornHeader header in Headers)
+                        {
+                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
+                        }
+                        using (var responseMessage = await client.SendAsync(request))
+                        {
+                            if (responseMessage.IsSuccessStatusCode)
+                            {
+                                string responseString = await responseMessage.Content.ReadAsStringAsync();
+                                return Serializer.Deserialize<TResponseContent>(responseString);
+                            }
+                            throw new HttpRequestException(
+                                $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                            );
+                        }
+
                     }
-                    throw new HttpRequestException(
-                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
-                    );
                 }
             }
             catch (Exception ex)
@@ -203,12 +217,6 @@ namespace HttUnicorn.Implementation
         public IHttUnicornSender SetTimeout(TimeSpan timeout)
         {
             Timeout = timeout;
-            return this;
-        }
-
-        public IHttUnicornSender SetHttpMethod(HttpMethod method)
-        {
-            Method = method;
             return this;
         }
     }
