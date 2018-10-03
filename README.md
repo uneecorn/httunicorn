@@ -12,7 +12,7 @@ Our goal is to publish HttUnicorn as a NuGet Package in the future. But for now,
 
 ### Get
 
-```
+```csharp
 List<Todo> todos = await new HttUnicornSender()
                       .SetUrl("http://localhost:3000/todos/")
                       .GetAsync<List<Todo>>();
@@ -24,7 +24,7 @@ string todoJson = await new HttUnicornSender()
 
 ### Post
 
-```
+```csharp
 await new HttUnicornSender()
   .SetUrl("http://localhost:3000/todos/")
   .PostAsync<Todo, Todo>(new Todo
@@ -39,7 +39,7 @@ This one will return the generated Todo, wich type is specified in the first typ
 
 ### Put
 
-```
+```csharp
 Todo updatedTodo = await new HttUnicornSender()
                     .SetUrl("http://localhost:3000/todos/" + todo.id)
                     .PutAsync<Todo, Todo>(todo);
@@ -49,7 +49,7 @@ This one will return the edited Todo, wich type is specified in the first type p
 
 ### Delete
 
-```
+```csharp
 await new HttUnicornSender()
   .SetUrl("http://localhost:3000/todos/")
   .DeleteAsync(key);
