@@ -78,7 +78,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                string responseString = await GetJsonAsync();
+                string responseString = await GetAsync();
                 return Serializer.Deserialize<TResponseContent>(responseString);
             }
             catch (Exception ex)
@@ -91,11 +91,11 @@ namespace HttUnicorn.Implementation
         /// Performs an HttpGet Request.
         /// </summary>
         /// <returns>The response body parsed as a JSON</returns>
-        public async Task<string> GetJsonAsync()
+        public async Task<string> GetAsync()
         {
             try
             {
-                using (HttpResponseMessage responseMessage = await GetResponseAsync())
+                using (HttpResponseMessage responseMessage = await GetOnlyResponseAsync())
                 {
                     if (responseMessage.IsSuccessStatusCode)
                     {
@@ -118,7 +118,7 @@ namespace HttUnicorn.Implementation
         /// Performs an HttpGet Request.
         /// </summary>
         /// <returns>The pure response for the request</returns>
-        public async Task<HttpResponseMessage> GetResponseAsync()
+        public async Task<HttpResponseMessage> GetOnlyResponseAsync()
         {
             try
             {
