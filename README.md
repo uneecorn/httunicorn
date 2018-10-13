@@ -66,7 +66,7 @@ MyApiResponse response = await new HttUnicornSender()
 
 ## Contact me
 
-Tyler Mendes de Brito - @tylerbryto – [colorigotica (Twitter)](https://twitter.com/colorigotica) – tyler.brito99@gmail.com
+Tyler Mendes de Brito - [@tylerbryto (Github)](https://github.com/tylerbryto) – [colorigotica (Twitter)](https://twitter.com/colorigotica) – tyler.brito99@gmail.com
 
 ## Contributing
 
