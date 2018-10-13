@@ -19,7 +19,7 @@ List<Todo> todos = await new HttUnicornSender()
                       
 string todoJson = await new HttUnicornSender()
                     .SetUrl("http://localhost:3000/todos/")
-                    .GetJsonAsync();
+                    .GetAsync();
 ```
 
 ### Post
@@ -33,9 +33,10 @@ await new HttUnicornSender()
     Title = "todo",
     UserId = 36
   });
+//This one will return the generated Todo, wich type is specified in the first type parameter.
+
 ```
 
-This one will return the generated Todo, wich type is specified in the first type parameter.
 
 ### Put
 
@@ -43,9 +44,10 @@ This one will return the generated Todo, wich type is specified in the first typ
 Todo updatedTodo = await new HttUnicornSender()
                     .SetUrl("http://localhost:3000/todos/" + todo.id)
                     .PutAsync<Todo, Todo>(todo);
+//This one will return the edited Todo, wich type is specified in the first type parameter.
+
 ```
 
-This one will return the edited Todo, wich type is specified in the first type parameter.
 
 ### Delete
 
@@ -57,9 +59,10 @@ await new HttUnicornSender()
 MyApiResponse response = await new HttUnicornSender()
                           .SetUrl("http://localhost:3000/todos/")
                           .DeleteAsync<MyApiResponse>(key);
+//This one is for situations when the requested API returns an object in the body of the response.
+
 ```
 
-This one is for situations when the requested API returns an object in the body of the response.
 
 ## Contact me
 
