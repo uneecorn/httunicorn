@@ -1,4 +1,4 @@
-# HttUnicorn v0.0.1
+# HttUnicorn v0.0.2-alfa
 
 Designed to help C# programmers creating HTTP Requests, this is The Hypertext Transfer Unicorn :unicorn:
 
