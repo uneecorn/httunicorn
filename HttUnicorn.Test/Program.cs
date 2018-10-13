@@ -10,15 +10,15 @@ namespace HttUnicorn.Test
     {
         static void Main(string[] args)
         {
-            //var x = Post().Result;
-            //x = Post().Result;
-            //x = Post().Result;
-            //x = Post().Result;
+            var x = Post().Result;
+            x = Post().Result;
+            x = Post().Result;
+            x = Post().Result;
             var a = Get().Result;
             Console.Write(GetJson().Result);
             var c = a.FirstOrDefault();
-            
-            //var b = Delete(c.id);
+
+            var b = Delete(c.id);
             Console.Write(GetJson().Result);
         }
 
