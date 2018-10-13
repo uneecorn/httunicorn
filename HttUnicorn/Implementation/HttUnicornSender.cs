@@ -11,36 +11,88 @@ namespace HttUnicorn.Implementation
 {
     public class HttUnicornSender : IHttUnicornSender
     {
+        /// <summary>
+        /// Request's address.
+        /// Default value: ""
+        /// </summary>
         public string Url { get; private set; }
-        public List<UnicornHeader> Headers { get; private set; }
-        public TimeSpan Timeout { get; private set; }
 
-        readonly HttpClient Client;
+        /// <summary>
+        /// Optional request's headers.
+        /// </summary>
+        public List<UnicornHeader> Headers { get; private set; }
+
+        /// <summary>
+        /// Request's timeout.
+        /// Default value: 20 seconds
+        /// </summary>
+        public TimeSpan Timeout { get; private set; }
 
         public HttUnicornSender()
         {
             Headers = new List<UnicornHeader>();
             Timeout = new TimeSpan(0, 0, 20);
         }
+
+        public HttUnicornSender(TimeSpan timeout)
+        {
+            Timeout = timeout;
+        }
+
+        /// <summary>
+        /// Adds a header to the request
+        /// </summary>
+        /// <param name="name">Header's name</param>
+        /// <param name="value">Header's value</param>
+        /// <returns>Recycled HttUnicornSender (this)</returns>
         public IHttUnicornSender AddHttpRequestHeader(string name, string value)
         {
             Headers.Add(new UnicornHeader(name, value));
             return this;
         }
 
+        /// <summary>
+        /// Sets the request's Url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns>Recycled HttUnicornSender (this)</returns>
         public IHttUnicornSender SetUrl(string url)
         {
             Url = url;
             return this;
         }
 
-        #region GET
+        /// <summary>
+        /// Sets the request's timeout.
+        /// </summary>
+        /// <param name="timeout">Timeout's value</param>
+        /// <returns>Recycled HttUnicornSender (this)</returns>
+        public IHttUnicornSender SetTimeout(TimeSpan timeout)
+        {
+            Timeout = timeout;
+            return this;
+        }
 
+        void ValidateRequest()
+        {
+            if (string.IsNullOrWhiteSpace(Url))
+            {
+                throw new InvalidOperationException("Url cannot be empty");
+            }
+        }
+
+        #region GET
+        /// <summary>
+        /// Performs an HttpGet Request.
+        /// </summary>
+        /// <typeparam name="TResponseContent">Response body's type</typeparam>
+        /// <returns>The response body deserialized to the specified type</returns>
         public async Task<TResponseContent> GetAsync<TResponseContent>()
         {
             try
             {
-                string responseString = await GetJsonAsync();
+                ValidateRequest();
+                string responseString = await GetAsync();
                 return Serializer.Deserialize<TResponseContent>(responseString);
             }
             catch (Exception ex)
@@ -49,21 +101,27 @@ namespace HttUnicorn.Implementation
             }
         }
 
-
-        public async Task<string> GetJsonAsync()
+        /// <summary>
+        /// Performs an HttpGet Request.
+        /// </summary>
+        /// <returns>The response body parsed as a JSON</returns>
+        public async Task<string> GetAsync()
         {
             try
             {
-                HttpResponseMessage responseMessage = await GetResponseAsync();
-                if (responseMessage.IsSuccessStatusCode)
+                ValidateRequest();
+                using (HttpResponseMessage responseMessage = await GetOnlyResponseAsync())
                 {
-                    string json = await responseMessage.Content.ReadAsStringAsync();
-                    responseMessage.Dispose();
-                    return json;
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        string json = await responseMessage.Content.ReadAsStringAsync();
+                        responseMessage.Dispose();
+                        return json;
+                    }
+                    throw new HttpRequestException(
+                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                    );
                 }
-                throw new HttpRequestException(
-                    $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
-                );
             }
             catch (Exception ex)
             {
@@ -71,27 +129,26 @@ namespace HttUnicorn.Implementation
             }
         }
 
-        public async Task<HttpResponseMessage> GetResponseAsync()
+        /// <summary>
+        /// Performs an HttpGet Request.
+        /// </summary>
+        /// <returns>The pure response for the request</returns>
+        public async Task<HttpResponseMessage> GetOnlyResponseAsync()
         {
             try
             {
-                using (var request = new HttpRequestMessage
+                ValidateRequest();
+                using (var client = new HttpClient())
                 {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri(Url)
-                })
-                {
-                    using (var client = new HttpClient())
+                    foreach (UnicornHeader header in Headers)
                     {
-                        foreach (UnicornHeader header in Headers)
-                        {
-                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
-                        }
-                        using (var responseMessage = await client.SendAsync(request))
-                        {
-                            return responseMessage;
-                        }
+                        client.DefaultRequestHeaders.Add(header.Name, header.Value);
                     }
+                    return await client.SendAsync(new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Get,
+                        RequestUri = new Uri(Url)
+                    });
                 }
             }
             catch (Exception ex)
@@ -103,13 +160,41 @@ namespace HttUnicorn.Implementation
         #endregion
 
         #region POST
-
+        /// <summary>
+        /// Performs an HttpPost Request.
+        /// </summary>
+        /// <typeparam name="TResponseContent">Response body's type</typeparam>
+        /// <typeparam name="TRequestContent">Request body's type</typeparam>
+        /// <param name="obj">Request body's value</param>
+        /// <returns>The response body deserialized to the specified type</returns>
         public async Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj)
         {
             try
             {
+                ValidateRequest();
+                string responseString = await PostAsync(obj);
+                return Serializer.Deserialize<TResponseContent>(responseString);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Performs an HttpPost Request.
+        /// </summary>
+        /// <typeparam name="TRequestContent">Request body's type</typeparam>
+        /// <param name="obj">Request body's value</param>
+        /// <returns>The response body parsed as a JSON</returns>
+        public async Task<string> PostAsync<TRequestContent>(TRequestContent obj)
+        {
+            try
+            {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
+                    Content = ContentFactory.CreateContent(obj),
                     Method = HttpMethod.Post,
                     RequestUri = new Uri(Url)
                 })
@@ -124,8 +209,7 @@ namespace HttUnicorn.Implementation
                         {
                             if (responseMessage.IsSuccessStatusCode)
                             {
-                                string responseString = await responseMessage.Content.ReadAsStringAsync();
-                                return Serializer.Deserialize<TResponseContent>(responseString);
+                                return await responseMessage.Content.ReadAsStringAsync();
                             }
                             throw new HttpRequestException(
                                 $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
@@ -147,6 +231,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Put,
@@ -186,17 +271,28 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                using (HttpResponseMessage responseMessage =
-                    await Client.DeleteAsync($"{Url}/{key}"))
+                ValidateRequest();
+                using (var request = new HttpRequestMessage
                 {
-                    if (responseMessage.IsSuccessStatusCode)
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri($"{Url}/{key}")
+                })
+                {
+                    using (HttpClient client = new HttpClient())
                     {
-                        string responseString = await responseMessage.Content.ReadAsStringAsync();
-                        return Serializer.Deserialize<TResponseContent>(responseString);
+                        using (HttpResponseMessage responseMessage =
+                            await client.SendAsync(request))
+                        {
+                            if (responseMessage.IsSuccessStatusCode)
+                            {
+                                string responseString = await responseMessage.Content.ReadAsStringAsync();
+                                return Serializer.Deserialize<TResponseContent>(responseString);
+                            }
+                            throw new HttpRequestException(
+                                $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                            );
+                        }
                     }
-                    throw new HttpRequestException(
-                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
-                    );
                 }
             }
             catch (Exception ex)
@@ -209,16 +305,26 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                using (HttpResponseMessage responseMessage =
-                    await Client.DeleteAsync($"{Url}/{key}"))
+                ValidateRequest();
+                using (var request = new HttpRequestMessage
                 {
-                    if (responseMessage.IsSuccessStatusCode)
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri($"{Url}/{key}")
+                })
+                {
+                    using (HttpClient client = new HttpClient())
                     {
-                        string responseString = await responseMessage.Content.ReadAsStringAsync();
+                        using (HttpResponseMessage responseMessage =
+                        await client.SendAsync(request))
+                        {
+                            if (!responseMessage.IsSuccessStatusCode)
+                            {
+                                throw new HttpRequestException(
+                                    $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                                );
+                            }
+                        }
                     }
-                    throw new HttpRequestException(
-                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
-                    );
                 }
             }
             catch (Exception ex)
@@ -226,12 +332,145 @@ namespace HttUnicorn.Implementation
                 throw ex;
             }
         }
-        #endregion
 
-        public IHttUnicornSender SetTimeout(TimeSpan timeout)
+        public async Task<TResponseContent> DeleteAsync<TResponseContent>()
         {
-            Timeout = timeout;
-            return this;
+            try
+            {
+                ValidateRequest();
+                using (HttpClient client = new HttpClient())
+                {
+                    using (HttpResponseMessage responseMessage =
+                    await client.SendAsync(new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Delete,
+                        RequestUri = new Uri(Url)
+                    }))
+                    {
+                        if (responseMessage.IsSuccessStatusCode)
+                        {
+                            string responseString = await responseMessage.Content.ReadAsStringAsync();
+                            return Serializer.Deserialize<TResponseContent>(responseString);
+                        }
+                        throw new HttpRequestException(
+                            $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                        );
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
+
+        public async Task DeleteAsync()
+        {
+            try
+            {
+                ValidateRequest();
+                using (var request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri(Url),
+                    Method = HttpMethod.Delete
+                })
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        using (HttpResponseMessage responseMessage =
+                        await client.SendAsync(request))
+                        {
+                            if (!responseMessage.IsSuccessStatusCode)
+                            {
+                                throw new HttpRequestException(
+                                    $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task DeleteAsync<TRequestContent>(TRequestContent obj)
+        {
+            try
+            {
+                ValidateRequest();
+                using (var request = new HttpRequestMessage
+                {
+                    Content = ContentFactory.CreateContent(obj),
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri(Url)
+                })
+                {
+                    using (var client = new HttpClient())
+                    {
+                        foreach (UnicornHeader header in Headers)
+                        {
+                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
+                        }
+                        using (var responseMessage = await client.SendAsync(request))
+                        {
+                            if (!responseMessage.IsSuccessStatusCode)
+                            {
+                                throw new HttpRequestException(
+                                    $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                                );
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<TResponseContent> DeleteAsync<TRequestContent, TResponseContent>(TRequestContent obj)
+        {
+            try
+            {
+                ValidateRequest();
+                using (var request = new HttpRequestMessage
+                {
+                    Content = ContentFactory.CreateContent(obj),
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri(Url)
+                })
+                {
+                    using (var client = new HttpClient())
+                    {
+                        foreach (UnicornHeader header in Headers)
+                        {
+                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
+                        }
+                        using (var responseMessage = await client.SendAsync(request))
+                        {
+                            if (responseMessage.IsSuccessStatusCode)
+                            {
+                                string responseString = await responseMessage.Content.ReadAsStringAsync();
+                                return Serializer.Deserialize<TResponseContent>(responseString);
+                            }
+                            throw new HttpRequestException(
+                                    $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                            );
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #endregion
     }
 }

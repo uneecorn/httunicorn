@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HttUnicorn.Test
@@ -18,7 +17,7 @@ namespace HttUnicorn.Test
             var a = Get().Result;
             Console.Write(GetJson().Result);
             var c = a.FirstOrDefault();
-            
+
             var b = Delete(c.id);
             Console.Write(GetJson().Result);
         }
@@ -34,7 +33,7 @@ namespace HttUnicorn.Test
         {
             return await new HttUnicornSender()
                 .SetUrl("http://localhost:3000/todos/")
-                .GetJsonAsync();
+                .GetAsync();
         }
 
         static async Task<Todo> Post()
