@@ -9,5 +9,6 @@ namespace HttUnicorn.Interfaces
     public interface IHasHttpPostMethod
     {
         Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj);
+        Task<string> PostAsync<TRequestContent>(TRequestContent obj);
     }
 }

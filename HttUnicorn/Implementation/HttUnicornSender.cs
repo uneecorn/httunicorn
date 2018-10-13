@@ -144,8 +144,20 @@ namespace HttUnicorn.Implementation
         #endregion
 
         #region POST
-
         public async Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj)
+        {
+            try
+            {
+                string responseString = await PostAsync(obj);
+                return Serializer.Deserialize<TResponseContent>(responseString);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<string> PostAsync<TRequestContent>(TRequestContent obj)
         {
             try
             {
@@ -166,8 +178,7 @@ namespace HttUnicorn.Implementation
                         {
                             if (responseMessage.IsSuccessStatusCode)
                             {
-                                string responseString = await responseMessage.Content.ReadAsStringAsync();
-                                return Serializer.Deserialize<TResponseContent>(responseString);
+                                return await responseMessage.Content.ReadAsStringAsync();
                             }
                             throw new HttpRequestException(
                                 $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
@@ -421,6 +432,7 @@ namespace HttUnicorn.Implementation
                 throw ex;
             }
         }
+
         #endregion
     }
 }
