@@ -15,8 +15,6 @@ namespace HttUnicorn.Implementation
         public List<UnicornHeader> Headers { get; private set; }
         public TimeSpan Timeout { get; private set; }
 
-        readonly HttpClient Client;
-
         public HttUnicornSender()
         {
             Headers = new List<UnicornHeader>();
@@ -54,16 +52,18 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                HttpResponseMessage responseMessage = await GetResponseAsync();
-                if (responseMessage.IsSuccessStatusCode)
+                using (HttpResponseMessage responseMessage = await GetResponseAsync())
                 {
-                    string json = await responseMessage.Content.ReadAsStringAsync();
-                    responseMessage.Dispose();
-                    return json;
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        string json = await responseMessage.Content.ReadAsStringAsync();
+                        responseMessage.Dispose();
+                        return json;
+                    }
+                    throw new HttpRequestException(
+                        $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
+                    );
                 }
-                throw new HttpRequestException(
-                    $"Status Code: {responseMessage.StatusCode}. Reason Phrase: {responseMessage.ReasonPhrase}"
-                );
             }
             catch (Exception ex)
             {
@@ -75,23 +75,17 @@ namespace HttUnicorn.Implementation
         {
             try
             {
-                using (var request = new HttpRequestMessage
+                using (var client = new HttpClient())
                 {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri(Url)
-                })
-                {
-                    using (var client = new HttpClient())
+                    foreach (UnicornHeader header in Headers)
                     {
-                        foreach (UnicornHeader header in Headers)
-                        {
-                            client.DefaultRequestHeaders.Add(header.Name, header.Value);
-                        }
-                        using (var responseMessage = await client.SendAsync(request))
-                        {
-                            return responseMessage;
-                        }
+                        client.DefaultRequestHeaders.Add(header.Name, header.Value);
                     }
+                    return await client.SendAsync(new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Get,
+                        RequestUri = new Uri(Url)
+                    });
                 }
             }
             catch (Exception ex)
