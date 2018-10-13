@@ -33,7 +33,7 @@ namespace HttUnicorn.Test
         {
             return await new HttUnicornSender()
                 .SetUrl("http://localhost:3000/todos/")
-                .GetJsonAsync();
+                .GetAsync();
         }
 
         static async Task<Todo> Post()

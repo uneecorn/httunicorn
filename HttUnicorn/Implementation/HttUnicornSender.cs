@@ -34,6 +34,11 @@ namespace HttUnicorn.Implementation
             Timeout = new TimeSpan(0, 0, 20);
         }
 
+        public HttUnicornSender(TimeSpan timeout)
+        {
+            Timeout = timeout;
+        }
+
         /// <summary>
         /// Adds a header to the request
         /// </summary>
@@ -68,16 +73,25 @@ namespace HttUnicorn.Implementation
             return this;
         }
 
+        void ValidateRequest()
+        {
+            if (string.IsNullOrWhiteSpace(Url))
+            {
+                throw new InvalidOperationException("Url cannot be empty");
+            }
+        }
+
         #region GET
         /// <summary>
         /// Performs an HttpGet Request.
         /// </summary>
-        /// <typeparam name="TResponseContent">The type of the response body</typeparam>
+        /// <typeparam name="TResponseContent">Response body's type</typeparam>
         /// <returns>The response body deserialized to the specified type</returns>
         public async Task<TResponseContent> GetAsync<TResponseContent>()
         {
             try
             {
+                ValidateRequest();
                 string responseString = await GetAsync();
                 return Serializer.Deserialize<TResponseContent>(responseString);
             }
@@ -95,6 +109,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (HttpResponseMessage responseMessage = await GetOnlyResponseAsync())
                 {
                     if (responseMessage.IsSuccessStatusCode)
@@ -122,6 +137,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (var client = new HttpClient())
                 {
                     foreach (UnicornHeader header in Headers)
@@ -144,10 +160,18 @@ namespace HttUnicorn.Implementation
         #endregion
 
         #region POST
+        /// <summary>
+        /// Performs an HttpPost Request.
+        /// </summary>
+        /// <typeparam name="TResponseContent">Response body's type</typeparam>
+        /// <typeparam name="TRequestContent">Request body's type</typeparam>
+        /// <param name="obj">Request body's value</param>
+        /// <returns>The response body deserialized to the specified type</returns>
         public async Task<TResponseContent> PostAsync<TResponseContent, TRequestContent>(TRequestContent obj)
         {
             try
             {
+                ValidateRequest();
                 string responseString = await PostAsync(obj);
                 return Serializer.Deserialize<TResponseContent>(responseString);
             }
@@ -157,10 +181,17 @@ namespace HttUnicorn.Implementation
             }
         }
 
+        /// <summary>
+        /// Performs an HttpPost Request.
+        /// </summary>
+        /// <typeparam name="TRequestContent">Request body's type</typeparam>
+        /// <param name="obj">Request body's value</param>
+        /// <returns>The response body parsed as a JSON</returns>
         public async Task<string> PostAsync<TRequestContent>(TRequestContent obj)
         {
             try
             {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
                     Content = ContentFactory.CreateContent(obj),
@@ -200,6 +231,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Put,
@@ -239,6 +271,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Delete,
@@ -272,6 +305,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Delete,
@@ -303,6 +337,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (HttpClient client = new HttpClient())
                 {
                     using (HttpResponseMessage responseMessage =
@@ -333,6 +368,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
                     RequestUri = new Uri(Url),
@@ -364,6 +400,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
                     Content = ContentFactory.CreateContent(obj),
@@ -400,6 +437,7 @@ namespace HttUnicorn.Implementation
         {
             try
             {
+                ValidateRequest();
                 using (var request = new HttpRequestMessage
                 {
                     Content = ContentFactory.CreateContent(obj),
