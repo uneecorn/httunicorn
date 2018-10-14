@@ -1,5 +1,7 @@
 # HttUnicorn v0.0.2-alfa
 
+[![NuGet](https://img.shields.io/badge/nuget-v0.0.2--alfa-blue.svg)](https://www.nuget.org/packages/HttUnicorn/0.0.2-alfa)  
+
 > Designed to help C# programmers creating HTTP Requests, this is The Hypertext Transfer Unicorn :unicorn:
 
 ## Usage
