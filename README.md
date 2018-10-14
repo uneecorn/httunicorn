@@ -6,11 +6,8 @@
 
 ## Usage
 
-Our goal is to publish HttUnicorn as a NuGet Package in the future. But for now, to use it, you'll need:
-
-1. Download or clone it;
-2. Add the project to your solution;
-3. Follow the examples below
+1. Install our [NuGet Package](https://www.nuget.org/packages/HttUnicorn/0.0.2-alfa);
+2. Follow the examples below
 
 ### Get
 
