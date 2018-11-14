@@ -7,9 +7,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HttUnicorn.Tests
 {
     [TestClass]
-    public class Unicorn_GetTest
+    public class GetTest
     {
-        const string URL = "https://jsonplaceholder.typicode.com/todos/1";
+        const string URL = "http://localhost:3000/todo/1";
 
         [TestMethod]
         public void GetResponse()

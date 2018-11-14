@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace HttUnicorn.Interfaces
 {
-    public interface IHttpGetter 
+    public interface IUnicornGetter 
     {
         /// <summary>
         /// Performs an HTTP GET Request
