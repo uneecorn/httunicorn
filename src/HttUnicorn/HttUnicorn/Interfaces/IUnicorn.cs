@@ -2,7 +2,8 @@
 {
     public interface IUnicorn :
         IUnicornGetter,
-        IUnicornPoster
+        IUnicornPoster,
+        IUnicornDeleter
     {
     }
 }

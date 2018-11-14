@@ -2,6 +2,7 @@
 using HttUnicorn.Config;
 using HttUnicorn.Sender;
 using HttUnicorn.Tests.Model;
+using HttUnicorn.Tests.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HttUnicorn.Tests
@@ -9,32 +10,33 @@ namespace HttUnicorn.Tests
     [TestClass]
     public class PostTest
     {
-        const string URL = "http://localhost:3000/todo/";
-
         [TestMethod]
         public void PostResponse()
         {
 
-            using (HttpResponseMessage result = new Unicorn(new UnicornConfig(URL)).PostRespnseAsync(new Todo
-            {
-                Completed = true,
-                Title = "My todo",
-                UserId = 2
-            }).Result)
+            using (HttpResponseMessage result =
+                new Unicorn(new UnicornConfig(Constants.URL))
+                .PostRespnseAsync(new Todo
+                {
+                    Completed = true,
+                    Title = "My todo",
+                    UserId = 2
+                }).Result)
             {
                 Assert.IsTrue(result.IsSuccessStatusCode);
             }
         }
 
         [TestMethod]
-        public void PostJson()
+        public void PostString()
         {
-            string result = new Unicorn(new UnicornConfig(URL)).PostJsonAsync<Todo>(new Todo
-            {
-                Completed = true,
-                Title = "My todo",
-                UserId = 2
-            }).Result;
+            string result = new Unicorn(new UnicornConfig(Constants.URL))
+                .PostStringAsync(new Todo
+                {
+                    Completed = true,
+                    Title = "My todo",
+                    UserId = 2
+                }).Result;
 
             Assert.IsTrue(result.Length > 0);
         }
@@ -42,7 +44,7 @@ namespace HttUnicorn.Tests
         [TestMethod]
         public void PostModel()
         {
-            var result = new Unicorn(new UnicornConfig(URL)).PostModelAsync<Todo, Todo>(new Todo
+            Todo result = new Unicorn(new UnicornConfig(Constants.URL)).PostModelAsync<Todo, Todo>(new Todo
             {
                 Completed = true,
                 Title = "My todo",

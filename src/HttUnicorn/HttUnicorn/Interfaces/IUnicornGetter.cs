@@ -8,7 +8,7 @@ namespace HttUnicorn.Interfaces
         /// <summary>
         /// Performs an HTTP GET Request
         /// </summary>
-        /// <typeparam name="T">Model's Type</typeparam>
+        /// <typeparam name="T">Response body's Type</typeparam>
         /// <returns>Response body deserialized to the specified type</returns>
         Task<T> GetModelAsync<T>();
 
@@ -16,7 +16,7 @@ namespace HttUnicorn.Interfaces
         /// Performs an HTTP GET Request
         /// </summary>
         /// <returns>Response body read as string</returns>
-        Task<string> GetJsonAync();
+        Task<string> GetStringAync();
 
         /// <summary>
         /// Performs an HTTP GET Request

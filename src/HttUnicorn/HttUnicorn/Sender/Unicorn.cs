@@ -22,9 +22,9 @@ namespace HttUnicorn.Sender
         /// Performs an HTTP GET Request
         /// </summary>
         /// <returns>Response body read as string</returns>
-        public async Task<string> GetJsonAync()
+        public async Task<string> GetStringAync()
         {
-            return await new UnicornGetter(Config).GetJsonAync();
+            return await new UnicornGetter(Config).GetStringAync();
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace HttUnicorn.Sender
         /// <typeparam name="TRequestBody">Request body's type</typeparam>
         /// <param name="obj">Request body</param>
         /// <returns>Response body read as string</returns>
-        public async Task<string> PostJsonAsync<TRequestBody>(TRequestBody obj)
+        public async Task<string> PostStringAsync<TRequestBody>(TRequestBody obj)
         {
-            return await new UnicornPoster(Config).PostJsonAsync(obj);
+            return await new UnicornPoster(Config).PostStringAsync(obj);
         }
 
         /// <summary>
@@ -78,6 +78,37 @@ namespace HttUnicorn.Sender
         public async Task<HttpResponseMessage> PostRespnseAsync<TRequestBody>(TRequestBody obj)
         {
             return await new UnicornPoster(Config).PostRespnseAsync(obj);
+        }
+
+        /// <summary>
+        /// Performs an HTTP DELETE Request
+        /// </summary>
+        /// <typeparam name="T">Response body's type</typeparam>
+        /// <param name="key">Identifier</param>
+        /// <returns>Response body deserialized to the specified type</returns>
+        public async Task<T> DeleteModelAsync<T>(object key)
+        {
+            return await new UnicornDeleter(Config).DeleteModelAsync<T>(key);
+        }
+
+        /// <summary>
+        /// Performs an HTTP DELETE Request
+        /// </summary>
+        /// <param name="key">Identifier</param>
+        /// <returns>Pure response message</returns>
+        public async Task<HttpResponseMessage> DeleteResponseAsync(object key)
+        {
+            return await new UnicornDeleter(Config).DeleteResponseAsync(key);
+        }
+
+        /// <summary>
+        /// Performs an HTTP DELETE Request
+        /// </summary>
+        /// <param name="key">Identifier</param>
+        /// <returns>Response body read as string</returns>
+        public async Task<string> DeleteStringAsync(object key)
+        {
+            return await new UnicornDeleter(Config).DeleteStringAsync(key);
         }
     }
 }

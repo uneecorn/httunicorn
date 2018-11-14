@@ -28,6 +28,6 @@ namespace HttUnicorn.Interfaces
         /// <typeparam name="TRequestBody">Request body's type</typeparam>
         /// <param name="obj">Request body</param>
         /// <returns>Response body read as string</returns>
-        Task<string> PostJsonAsync<TRequestBody>(TRequestBody obj);
+        Task<string> PostStringAsync<TRequestBody>(TRequestBody obj);
     }
 }

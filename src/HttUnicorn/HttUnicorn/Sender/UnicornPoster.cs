@@ -23,7 +23,7 @@ namespace HttUnicorn.Sender
         /// <typeparam name="TRequestBody">Request body's type</typeparam>
         /// <param name="obj">Request body</param>
         /// <returns>Response body read as string</returns>
-        public async Task<string> PostJsonAsync<TRequestBody>(TRequestBody obj)
+        public async Task<string> PostStringAsync<TRequestBody>(TRequestBody obj)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace HttUnicorn.Sender
         {
             try
             {
-                return Serializer.Deserialize<TResponseBody>(await PostJsonAsync(obj));
+                return Serializer.Deserialize<TResponseBody>(await PostStringAsync(obj));
             }
             catch (Exception ex)
             {

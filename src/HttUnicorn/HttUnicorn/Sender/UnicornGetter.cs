@@ -19,7 +19,7 @@ namespace HttUnicorn.Sender
         /// Performs an HTTP GET Request
         /// </summary>
         /// <returns>Response body read as string</returns>
-        public async Task<string> GetJsonAync()
+        public async Task<string> GetStringAync()
         {
             try
             {
@@ -47,7 +47,7 @@ namespace HttUnicorn.Sender
         {
             try
             {
-                return Serializer.Deserialize<T>(await GetJsonAync());
+                return Serializer.Deserialize<T>(await GetStringAync());
             }
             catch (Exception ex)
             {
