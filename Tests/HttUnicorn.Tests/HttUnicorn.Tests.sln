@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttUnicorn.Tests", "HttUnicorn.Tests\HttUnicorn.Tests.csproj", "{BBD5A59C-A255-4FC9-AA41-5E0723954D85}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttUnicorn", "..\..\src\HttUnicorn\HttUnicorn\HttUnicorn.csproj", "{50E8027E-366A-4157-A039-28441DB845D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBD5A59C-A255-4FC9-AA41-5E0723954D85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBD5A59C-A255-4FC9-AA41-5E0723954D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBD5A59C-A255-4FC9-AA41-5E0723954D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBD5A59C-A255-4FC9-AA41-5E0723954D85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50E8027E-366A-4157-A039-28441DB845D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50E8027E-366A-4157-A039-28441DB845D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50E8027E-366A-4157-A039-28441DB845D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50E8027E-366A-4157-A039-28441DB845D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7D49BDA3-769A-4F5B-92E1-9884E32C0872}
+	EndGlobalSection
+EndGlobal

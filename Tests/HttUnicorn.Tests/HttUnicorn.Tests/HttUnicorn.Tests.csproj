@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HttUnicorn\HttUnicorn.csproj" />
+    <ProjectReference Include="..\..\..\src\HttUnicorn\HttUnicorn\HttUnicorn.csproj" />
   </ItemGroup>
 
 </Project>
