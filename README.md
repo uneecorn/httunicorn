@@ -1,13 +1,13 @@
-# HttUnicorn v0.0.2-alfa
+# HttUnicorn v0.1.0
 
-[![NuGet](https://img.shields.io/badge/nuget-v0.0.2--alfa-blue.svg)](https://www.nuget.org/packages/HttUnicorn/0.0.2-alfa)  
+[![NuGet](https://img.shields.io/badge/nuget-v0.1.0-blue.svg)](https://www.nuget.org/packages/HttUnicorn/0.0.2-alfa)  
 
 > Designed to help C# programmers creating HTTP Requests, this is The Hypertext Transfer Unicorn :unicorn:
 
 ## Usage
 
 ### Nuget
-You can get **HttpUnicorn** by installing our [NuGet Package](https://www.nuget.org/packages/HttUnicorn/0.0.2-alfa);
+You can get **HttpUnicorn** by installing our [NuGet Package](https://www.nuget.org/packages/HttUnicorn/0.1.0);
 
 ### Config
 **HttUnicorn** uses a config object called UnicornConfig that need a string with the url.
