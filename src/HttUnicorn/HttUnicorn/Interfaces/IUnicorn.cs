@@ -3,7 +3,8 @@
     public interface IUnicorn :
         IUnicornGetter,
         IUnicornPoster,
-        IUnicornDeleter
+        IUnicornDeleter,
+        IUnicornPutter
     {
     }
 }
