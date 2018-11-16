@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Version>0.1</Version>
+    <Authors>Tyler Mendes de Brito</Authors>
+    <Company>Uneecorn</Company>
+    <PackageLicenseUrl>https://github.com/uneecorn/httunicorn/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/uneecorn/httunicorn</PackageProjectUrl>
+    <PackageIconUrl>https://i.imgur.com/3jNGMbl.jpg</PackageIconUrl>
+    <PackageTags>http, unicorn, fluentapi, request</PackageTags>
+    <PackageReleaseNotes>Migrated to dotnet core</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+</Project>
