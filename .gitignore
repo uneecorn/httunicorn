@@ -2,4 +2,4 @@ bin
 obj
 .vs
 db.json
-.vscode
+# .vscode # not ignored because it contains VERY useful configuration to run the project
