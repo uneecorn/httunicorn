@@ -8,4 +8,4 @@ install:
 
 script:
  - dotnet build src/HttUnicorn/HttUnicorn/HttUnicorn.csproj
- - dotnet test HelloWorld.Tests/HelloWorld.Tests.csproj
+ - dotnet test Tests/HttUnicorn.Tests/HttUnicorn.Tests.csproj
