@@ -118,4 +118,4 @@ See [git flow cheatsheet](https://danielkummer.github.io/git-flow-cheatsheet/).
 
 ---
 
-🦄 Comi o cu de quem tá lendo
+
