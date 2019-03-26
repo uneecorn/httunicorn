@@ -22,10 +22,11 @@ You can also use UnicornConfig to set the Timeout and Headers
 var config = new UnicornConfig(
   "http://localhost:3000/todos/",
   timeout: new TimeSpan(0, 0, 45),
-  headers: new List<UnicornHeader>(
+  headers: new List<UnicornHeader>
+  {
     new UnicornHeader("header_name", "header_value"),
     new UnicornHeader("other_header_name", "other_header_value")
-  ));
+  });
 ```
 
 You can pass the timeout directly as seconds
