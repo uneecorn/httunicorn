@@ -1,10 +1,9 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using HttUnicorn.Config;
+﻿using HttUnicorn.Config;
 using HttUnicorn.Convertion;
 using HttUnicorn.Exceptions;
 using HttUnicorn.Interfaces;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HttUnicorn.Sender
 {
@@ -25,21 +24,14 @@ namespace HttUnicorn.Sender
         /// <returns>Response body read as string</returns>
         public async Task<string> PostStringAsync<TRequestBody>(TRequestBody obj)
         {
-            try
+            using (HttpResponseMessage responseMessage =
+                await PostRespnseAsync(obj))
             {
-                using (HttpResponseMessage responseMessage =
-                    await PostRespnseAsync(obj))
+                if (!responseMessage.IsSuccessStatusCode)
                 {
-                    if (!responseMessage.IsSuccessStatusCode)
-                    {
-                        throw new HttpRequestUnicornException($"An error {responseMessage.StatusCode} ocurred while sending the request");
-                    }
-                    return await responseMessage.ReadContentAsStringAsync();
+                    throw new HttpRequestUnicornException($"An error {responseMessage.StatusCode} ocurred while sending the request");
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return await responseMessage.ReadContentAsStringAsync();
             }
         }
 
@@ -52,14 +44,7 @@ namespace HttUnicorn.Sender
         /// <returns>Response body deserialized to the specified type</returns>
         public async Task<TResponseBody> PostModelAsync<TRequestBody, TResponseBody>(TRequestBody obj)
         {
-            try
-            {
-                return Serializer.Deserialize<TResponseBody>(await PostStringAsync(obj));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Serializer.Deserialize<TResponseBody>(await PostStringAsync(obj));
         }
 
         /// <summary>
@@ -70,20 +55,13 @@ namespace HttUnicorn.Sender
         /// <returns>Pure response message</returns>
         public async Task<HttpResponseMessage> PostRespnseAsync<TRequestBody>(TRequestBody obj)
         {
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
+                foreach (UnicornHeader header in Config.Headers)
                 {
-                    foreach (UnicornHeader header in Config.Headers)
-                    {
-                        client.DefaultRequestHeaders.Add(header.Name, header.Value);
-                    }
-                    return await client.PostAsync(Config.Url, ContentGenerator.Generate(obj));
+                    client.DefaultRequestHeaders.Add(header.Name, header.Value);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return await client.PostAsync(Config.Url, ContentGenerator.Generate(obj));
             }
         }
     }
