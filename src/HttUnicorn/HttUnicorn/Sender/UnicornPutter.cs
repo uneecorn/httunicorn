@@ -1,10 +1,9 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using HttUnicorn.Config;
+﻿using HttUnicorn.Config;
 using HttUnicorn.Convertion;
 using HttUnicorn.Exceptions;
 using HttUnicorn.Interfaces;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HttUnicorn.Sender
 {
@@ -23,14 +22,7 @@ namespace HttUnicorn.Sender
         /// <returns>Response body deserialized to the specified type</returns>
         public async Task<TResponseBody> PutModelAsync<TRequestBody, TResponseBody>(TRequestBody obj, object key)
         {
-            try
-            {
-                return Serializer.Deserialize<TResponseBody>(await PutStringAsync(obj, key));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Serializer.Deserialize<TResponseBody>(await PutStringAsync(obj, key));
         }
 
         /// <summary>
@@ -42,22 +34,15 @@ namespace HttUnicorn.Sender
         /// <returns>Pure response message</returns>
         public async Task<HttpResponseMessage> PutResponseAsync<T>(T obj, object key)
         {
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
+                foreach (UnicornHeader header in Config.Headers)
                 {
-                    foreach (UnicornHeader header in Config.Headers)
-                    {
-                        client.DefaultRequestHeaders.Add(header.Name, header.Value);
-                    }
-                    return await client
-                        .PutAsync(Config.Url + "/" + key,
-                        ContentGenerator.Generate(obj));
+                    client.DefaultRequestHeaders.Add(header.Name, header.Value);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return await client
+                    .PutAsync(Config.Url + "/" + key,
+                    ContentGenerator.Generate(obj));
             }
         }
 
@@ -70,21 +55,14 @@ namespace HttUnicorn.Sender
         /// <returns>Response body read as string</returns>
         public async Task<string> PutStringAsync<T>(T obj, object key)
         {
-            try
+            using (HttpResponseMessage responseMessage =
+                await PutResponseAsync(obj, key))
             {
-                using (HttpResponseMessage responseMessage =
-                    await PutResponseAsync(obj, key))
+                if (!responseMessage.IsSuccessStatusCode)
                 {
-                    if (!responseMessage.IsSuccessStatusCode)
-                    {
-                        throw new HttpRequestUnicornException($"An error {responseMessage.StatusCode} ocurred while sending the request");
-                    }
-                    return await responseMessage.ReadContentAsStringAsync();
+                    throw new HttpRequestUnicornException($"An error {responseMessage.StatusCode} ocurred while sending the request");
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return await responseMessage.ReadContentAsStringAsync();
             }
         }
     }

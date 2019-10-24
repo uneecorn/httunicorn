@@ -1,10 +1,9 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using HttUnicorn.Config;
+﻿using HttUnicorn.Config;
 using HttUnicorn.Convertion;
 using HttUnicorn.Exceptions;
 using HttUnicorn.Interfaces;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HttUnicorn.Sender
 {
@@ -25,14 +24,7 @@ namespace HttUnicorn.Sender
         /// <returns>Response body deserialized to the specified type</returns>
         public async Task<T> DeleteModelAsync<T>(object key)
         {
-            try
-            {
-                return Serializer.Deserialize<T>(await DeleteStringAsync(key));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Serializer.Deserialize<T>(await DeleteStringAsync(key));
         }
 
         /// <summary>
@@ -42,20 +34,13 @@ namespace HttUnicorn.Sender
         /// <returns>Pure response message</returns>
         public async Task<HttpResponseMessage> DeleteResponseAsync(object key)
         {
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
+                foreach (UnicornHeader header in Config.Headers)
                 {
-                    foreach (UnicornHeader header in Config.Headers)
-                    {
-                        client.DefaultRequestHeaders.Add(header.Name, header.Value);
-                    }
-                    return await client.DeleteAsync(Config.Url + "/" + key);
+                    client.DefaultRequestHeaders.Add(header.Name, header.Value);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return await client.DeleteAsync(Config.Url + "/" + key);
             }
         }
 
@@ -66,20 +51,13 @@ namespace HttUnicorn.Sender
         /// <returns>Response body read as string</returns>
         public async Task<string> DeleteStringAsync(object key)
         {
-            try
+            using (HttpResponseMessage responseMessage = await DeleteResponseAsync(key))
             {
-                using (HttpResponseMessage responseMessage = await DeleteResponseAsync(key))
+                if (!responseMessage.IsSuccessStatusCode)
                 {
-                    if (!responseMessage.IsSuccessStatusCode)
-                    {
-                        throw new HttpRequestUnicornException($"An error {responseMessage.StatusCode} ocurred while sending the request");
-                    }
-                    return await responseMessage.ReadContentAsStringAsync();
+                    throw new HttpRequestUnicornException($"An error {responseMessage.StatusCode} ocurred while sending the request");
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return await responseMessage.ReadContentAsStringAsync();
             }
         }
     }

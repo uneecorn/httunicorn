@@ -1,10 +1,9 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using HttUnicorn.Config;
+﻿using HttUnicorn.Config;
 using HttUnicorn.Convertion;
 using HttUnicorn.Exceptions;
 using HttUnicorn.Interfaces;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HttUnicorn.Sender
 {
@@ -21,20 +20,13 @@ namespace HttUnicorn.Sender
         /// <returns>Response body read as string</returns>
         public async Task<string> GetStringAync()
         {
-            try
+            using (HttpResponseMessage responseMessage = await GetResponseAsync())
             {
-                using (HttpResponseMessage responseMessage = await GetResponseAsync())
+                if (!responseMessage.IsSuccessStatusCode)
                 {
-                    if (!responseMessage.IsSuccessStatusCode)
-                    {
-                        throw new HttpRequestUnicornException($"An error {responseMessage.StatusCode} ocurred while sending the request");
-                    }
-                    return await responseMessage.ReadContentAsStringAsync();
+                    throw new HttpRequestUnicornException($"An error {responseMessage.StatusCode} ocurred while sending the request");
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return await responseMessage.ReadContentAsStringAsync();
             }
         }
 
@@ -45,14 +37,7 @@ namespace HttUnicorn.Sender
         /// <returns>Response body deserialized to the specified type</returns>
         public async Task<T> GetModelAsync<T>()
         {
-            try
-            {
-                return Serializer.Deserialize<T>(await GetStringAync());
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Serializer.Deserialize<T>(await GetStringAync());
         }
 
         /// <summary>
@@ -61,20 +46,13 @@ namespace HttUnicorn.Sender
         /// <returns>Pure response message</returns>
         public async Task<HttpResponseMessage> GetResponseAsync()
         {
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
+                foreach (UnicornHeader header in Config.Headers)
                 {
-                    foreach (UnicornHeader header in Config.Headers)
-                    {
-                        client.DefaultRequestHeaders.Add(header.Name, header.Value);
-                    }
-                    return await client.GetAsync(Config.Url);
+                    client.DefaultRequestHeaders.Add(header.Name, header.Value);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                return await client.GetAsync(Config.Url);
             }
         }
     }
