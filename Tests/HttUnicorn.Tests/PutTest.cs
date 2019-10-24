@@ -5,6 +5,7 @@ using HttUnicorn.Sender;
 using HttUnicorn.Tests.Model;
 using HttUnicorn.Tests.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static HttUnicorn.Config.UnicornConfig;
 
 namespace HttUnicorn.Tests
 {
@@ -15,14 +16,14 @@ namespace HttUnicorn.Tests
         public void PutResponse()
         {
             string url = Constants.URL + "/21";
-            Todo oldModel = new Unicorn(new UnicornConfig(url)).GetModelAsync<Todo>().Result;
+            Todo oldModel = new Unicorn(UnicornConfigFactory.NewInstance(url)).GetModelAsync<Todo>().Result;
             Assert.IsNotNull(oldModel);
             Assert.IsTrue(oldModel.Id > 0);
 
             oldModel.Title = "My edited todo";
 
             using (HttpResponseMessage responseMessage =
-                new Unicorn(new UnicornConfig(Constants.URL))
+                new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .PutResponseAsync(oldModel, oldModel.Id).Result)
             {
                 Assert.IsTrue(responseMessage.IsSuccessStatusCode);
@@ -37,14 +38,14 @@ namespace HttUnicorn.Tests
         public void PutString()
         {
             string urlGet = Constants.URL + "/22";
-            Todo oldModel = new Unicorn(new UnicornConfig(urlGet))
+            Todo oldModel = new Unicorn(UnicornConfigFactory.NewInstance(urlGet))
                 .GetModelAsync<Todo>().Result;
             Assert.IsNotNull(oldModel);
             Assert.IsTrue(oldModel.Id > 0);
 
             oldModel.Title = "My edited todo";
 
-            string stringResult = new Unicorn(new UnicornConfig(Constants.URL))
+            string stringResult = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .PutStringAsync(oldModel, oldModel.Id).Result;
 
             Todo newModel = Serializer.Deserialize<Todo>(stringResult);
@@ -57,14 +58,14 @@ namespace HttUnicorn.Tests
         public void PutModel()
         {
             string urlGet = Constants.URL + "/23";
-            Todo oldModel = new Unicorn(new UnicornConfig(urlGet))
+            Todo oldModel = new Unicorn(UnicornConfigFactory.NewInstance(urlGet))
                             .GetModelAsync<Todo>().Result;
             Assert.IsNotNull(oldModel);
             Assert.IsTrue(oldModel.Id > 0);
 
             oldModel.Title = "My edited todo";
 
-            Todo newModel = new Unicorn(new UnicornConfig(Constants.URL))
+            Todo newModel = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .PutModelAsync<Todo, Todo>(oldModel, oldModel.Id).Result;
 
             Assert.IsNotNull(newModel);

@@ -34,69 +34,31 @@ namespace HttUnicorn.Config
         /// </summary>
         public IList<UnicornHeader> Headers { get; private set; }
 
-        /// <summary>
-        /// Creates a new config object with default timeout (20 seconds),
-        /// default header list (empty list), specified url and method.
-        /// </summary>
-        /// <param name="url">Request's url</param>
-        public UnicornConfig(string url)
+        public static class UnicornConfigFactory
         {
-            Url = url;
-            Timeout = Constants.DEFAULT_TIMEOUT_VALUE;
-            Headers = Constants.DEFAULT_HEADERS;
+            /// <summary>
+            /// Creates a new config object
+            /// </summary>
+            /// <param name="url">Request's url</param>
+            /// <param name="timeout">Request's timeout</param>
+            /// <param name="headers">Request's headers</param>
+            /// <returns>New instance of UnicornConfig class</returns>
+            public static UnicornConfig NewInstance(string url,
+                TimeSpan? timeout = null,
+                IList<UnicornHeader> headers = null)
+            {
+                return new UnicornConfig
+                {
+                    Url = url,
+                    Timeout = GetTimeout(timeout),
+                    Headers = GetHeaders(headers),
+                };
+            }
+
+            static TimeSpan GetTimeout(TimeSpan? timeout = null) => timeout ?? Constants.DEFAULT_TIMEOUT_VALUE;
+            static IList<UnicornHeader> GetHeaders(IList<UnicornHeader> headers = null) => headers ?? Constants.DEFAULT_HEADERS;
         }
 
-        /// <summary>
-        /// Creates a new config object with default header list (empty list),
-        /// specified url, method and timeout
-        /// </summary>
-        /// <param name="url">Request's url</param>
-        /// <param name="timeout">Request's timeout</param>
-        public UnicornConfig(string url, TimeSpan timeout)
-        {
-            Url = url;
-            Timeout = timeout;
-            Headers = Constants.DEFAULT_HEADERS;
-        }
-
-        /// <summary>
-        /// Creates a new config object with default header list (empty list),
-        /// specified url, method and timeout
-        /// </summary>
-        /// <param name="url">Request's url</param>
-        /// <param name="timeout">Request's timeout</param>
-        public UnicornConfig(string url, short timeoutSeconds)
-        {
-            Url = url;
-            Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-            Headers = Constants.DEFAULT_HEADERS;
-        }
-
-        /// <summary>
-        /// Creates a new config object with default timeout (20 seconds),
-        /// specified url, method and header list
-        /// </summary>
-        /// <param name="url">Request's url</param>
-        /// <param name="headers">Request's headers</param>
-        public UnicornConfig(string url, IList<UnicornHeader> headers)
-        {
-            Url = url;
-            Headers = headers;
-            Timeout = Constants.DEFAULT_TIMEOUT_VALUE;
-        }
-
-        /// <summary>
-        /// Creates a new config object with specified url, 
-        /// method, timeout and header list
-        /// </summary>
-        /// <param name="url">Request's url</param>
-        /// <param name="timeout">Request's timeout</param>
-        /// <param name="headers">Request's headers</param>
-        public UnicornConfig(string url, TimeSpan timeout, IList<UnicornHeader> headers)
-        {
-            Url = url;
-            Timeout = timeout;
-            Headers = headers;
-        }
+        private UnicornConfig() { }
     }
 }

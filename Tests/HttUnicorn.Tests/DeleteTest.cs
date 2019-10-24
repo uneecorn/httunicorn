@@ -6,6 +6,7 @@ using HttUnicorn.Sender;
 using HttUnicorn.Tests.Model;
 using HttUnicorn.Tests.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static HttUnicorn.Config.UnicornConfig;
 
 namespace HttUnicorn.Tests
 {
@@ -15,7 +16,7 @@ namespace HttUnicorn.Tests
         [TestMethod]
         public void DeleteResponse()
         {
-            List<Todo> oldTodos = new Unicorn(new UnicornConfig(Constants.URL))
+            List<Todo> oldTodos = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .GetModelAsync<List<Todo>>().Result;
             Assert.IsTrue(oldTodos != null && oldTodos.Count > 0);
 
@@ -23,12 +24,12 @@ namespace HttUnicorn.Tests
 
             Todo first = oldTodos.FirstOrDefault();
 
-            HttpResponseMessage result = new Unicorn(new UnicornConfig(Constants.URL))
+            HttpResponseMessage result = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .DeleteResponseAsync(first.Id).Result;
 
             Assert.IsTrue(result.IsSuccessStatusCode);
 
-            List<Todo> newTodos = new Unicorn(new UnicornConfig(Constants.URL))
+            List<Todo> newTodos = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .GetModelAsync<List<Todo>>().Result;
 
             Assert.IsTrue(newTodos != null && newTodos.Count > 0);
@@ -41,7 +42,7 @@ namespace HttUnicorn.Tests
         [TestMethod]
         public void DeleteJson()
         {
-            List<Todo> oldTodos = new Unicorn(new UnicornConfig(Constants.URL))
+            List<Todo> oldTodos = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .GetModelAsync<List<Todo>>().Result;
             Assert.IsTrue(oldTodos != null && oldTodos.Count > 0);
 
@@ -49,10 +50,10 @@ namespace HttUnicorn.Tests
 
             Todo first = oldTodos.FirstOrDefault();
 
-            string result = new Unicorn(new UnicornConfig(Constants.URL))
+            string result = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .DeleteStringAsync(first.Id).Result;
 
-            List<Todo> newTodos = new Unicorn(new UnicornConfig(Constants.URL))
+            List<Todo> newTodos = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .GetModelAsync<List<Todo>>().Result;
 
             Assert.IsTrue(newTodos != null && newTodos.Count > 0);
