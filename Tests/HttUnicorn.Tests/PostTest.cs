@@ -4,6 +4,7 @@ using HttUnicorn.Sender;
 using HttUnicorn.Tests.Model;
 using HttUnicorn.Tests.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static HttUnicorn.Config.UnicornConfig;
 
 namespace HttUnicorn.Tests
 {
@@ -15,7 +16,7 @@ namespace HttUnicorn.Tests
         {
 
             using (HttpResponseMessage result =
-                new Unicorn(new UnicornConfig(Constants.URL))
+                new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .PostRespnseAsync(new Todo
                 {
                     Completed = true,
@@ -30,7 +31,7 @@ namespace HttUnicorn.Tests
         [TestMethod]
         public void PostString()
         {
-            string result = new Unicorn(new UnicornConfig(Constants.URL))
+            string result = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL))
                 .PostStringAsync(new Todo
                 {
                     Completed = true,
@@ -44,7 +45,7 @@ namespace HttUnicorn.Tests
         [TestMethod]
         public void PostModel()
         {
-            Todo result = new Unicorn(new UnicornConfig(Constants.URL)).PostModelAsync<Todo, Todo>(new Todo
+            Todo result = new Unicorn(UnicornConfigFactory.NewInstance(Constants.URL)).PostModelAsync<Todo, Todo>(new Todo
             {
                 Completed = true,
                 Title = "My todo",
